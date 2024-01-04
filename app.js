@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const axios = require("axios");
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
 app.post("/", async (req, res) => {
   res.setHeader("Content-Type", "text/plain");
   const { name, title, commit_url } = req.body;
+  console.log(`${name} --- ${title} --- ${commit_url}`);
   let url;
   try {
     url = JSON.parse(feishu);
@@ -40,7 +42,7 @@ app.post("/", async (req, res) => {
       elements: [
         {
           tag: "div",
-          text: { content: title, tag: "lark_md" },
+          text: { content: title || "部署成功", tag: "lark_md" },
         },
         {
           actions: [
