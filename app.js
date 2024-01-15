@@ -16,6 +16,7 @@ app.get("/", (req, res) => {
 app.post("/", async (req, res) => {
   res.setHeader("Content-Type", "text/plain");
   const { name, title, commit_url } = req.body;
+  console.log(JSON.stringify(req.body));
   console.log(`${name} --- ${title} --- ${commit_url}`);
   let url;
   try {
