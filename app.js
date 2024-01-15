@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 
 app.post("/", async (req, res) => {
   res.setHeader("Content-Type", "text/plain");
-  const { name, title, commit_url } = req.body;
+  let { state, id, name, title, commit_url, error_message } = req.body;
   console.log(JSON.stringify(req.body));
   console.log(`${name} --- ${title} --- ${commit_url}`);
   let url;
@@ -37,13 +37,25 @@ app.post("/", async (req, res) => {
     return;
   }
 
+  title = title || "手动部署成功";
+  let content = "😀 eufy | 代码发布成功";
+
+  if (state === "error") {
+    content = "😵 eufy | 代码发布失败";
+    title = error_message;
+  }
+
+  if (!commit_url || state === "error") {
+    commit_url = `https://app.netlify.com/teams/anker-dtc/builds/${id}`
+  }
+
   await axios.post(url, {
     msg_type: "interactive",
     card: {
       elements: [
         {
           tag: "div",
-          text: { content: title || "部署成功", tag: "lark_md" },
+          text: { content: title, tag: "lark_md" },
         },
         {
           actions: [
@@ -59,7 +71,7 @@ app.post("/", async (req, res) => {
         },
       ],
       header: {
-        title: { content: "🚩 eufy | 代码发布提醒", tag: "plain_text" },
+        title: { content, tag: "plain_text" },
       },
     },
   });
